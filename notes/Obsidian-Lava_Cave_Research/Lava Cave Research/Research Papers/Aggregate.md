@@ -14,8 +14,8 @@
 
 **Very relevant to review:**
  - Radar evidence of an accessible cave conduit on the Moon below the Mare Tranquillitatis pit
-	 - Authors contacted via vut mail
 	 - https://www.nature.com/articles/s41550-024-02302-y#auth-Leonardo-Carrer-Aff1
+	 - [[s41550-024-02302-y.pdf]]
  - Lava Tubes' Radar Observation on Moon and Mars
 	 - https://encyclopedia.pub/entry/45292
 	 - [[lava-tubes-radar-observation-on-moon-and-mars-2_compressed.pdf]]
