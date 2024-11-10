@@ -61,6 +61,3 @@
  - Mapping potential (pretty serious) lava tube system:
 	 - https://agupubs.onlinelibrary.wiley.com/doi/10.1002/2016GL071588
 	 - https://agupubs.onlinelibrary.wiley.com/doi/10.1002/2017GL074998
-
-**Requested:**
- - https://www.researchgate.net/publication/253399263_Probing_Lunar_Lava-Tube_Caves_by_Radar_Illumination

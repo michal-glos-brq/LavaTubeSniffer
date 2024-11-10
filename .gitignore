@@ -1,5 +1,6 @@
 # My
 *.obsidian
+*lroc_pits_atlas.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
