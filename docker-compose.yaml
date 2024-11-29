@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongo_lunar_sniffer_DB
+    ports:
+      - "27017:27017"
+    volumes:
+      - /media/mglos/HDD1_8TB1/MONGO/DB:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always

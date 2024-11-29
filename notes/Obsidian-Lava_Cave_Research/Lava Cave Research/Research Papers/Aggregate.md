@@ -15,7 +15,8 @@
  - Looking for Lava Tubes in SELENE radar data, collection of "naked"? lava tubes:
 	 - https://www.researchgate.net/publication/357872180_High_Resolution_Radar_Clutter_Analysis_Of_The_Selene_Kaguya_Lunar_Radar_Sounder_Data
 	 - `Poggiali_AGU2021_NoAnimations_v2.pptx`
-
+ - Looking for intact lava tubes with Selene (radar echoes)
+	 - https://www.isas.jaxa.jp/en/topics/001159.html
 
 **Quite relevant:**
 
