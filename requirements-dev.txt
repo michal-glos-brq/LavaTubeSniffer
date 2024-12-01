@@ -1,0 +1,4 @@
+pandas
+pds4-tools
+numpy<2.0.0
+lxml
