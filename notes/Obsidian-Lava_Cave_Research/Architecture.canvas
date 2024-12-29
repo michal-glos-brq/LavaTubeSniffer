@@ -1,0 +1,36 @@
+{
+	"nodes":[
+		{"id":"126281a24349dd65","type":"group","x":-2020,"y":-1440,"width":1560,"height":920,"label":"High Level System Architecture"},
+		{"id":"78baaf96452f12f5","type":"group","x":-2000,"y":-1380,"width":420,"height":830,"color":"4","label":"Mongo DB"},
+		{"id":"4172f132640fbb71","type":"group","x":-1140,"y":-1380,"width":300,"height":410,"color":"3","label":"Celery Workers"},
+		{"id":"48e9c4fcc1dc4100","type":"group","x":-810,"y":-1380,"width":300,"height":280,"color":"5","label":"Datasets"},
+		{"id":"e0c34f402008fae9","type":"text","text":"### Lunar Pits Atlas\n - PitsCollection\n - PitsDetailCollection\n - PitsImageCollection","x":-1940,"y":-1260,"width":300,"height":160},
+		{"id":"dad4d324e9bbc97c","type":"text","text":"# MONGO server","x":-1940,"y":-1350,"width":300,"height":60,"color":"4"},
+		{"id":"6bfc72e73a5b5dc8","type":"text","text":"### Aggregated Data\n - Single collection with distinct properties\n\t - Lunar Pit ID\n\t - Method of aggregation\n\t - Data\n\t - Metadata\n\t - Dataset","x":-1940,"y":-910,"width":300,"height":320},
+		{"id":"74363746a7e5455a","type":"text","text":"### Data heap\n - Collection for each dataset","x":-1940,"y":-1060,"width":300,"height":120},
+		{"id":"15d940226cdb5c39","type":"text","text":"## Master worker","x":-1120,"y":-1360,"width":260,"height":60},
+		{"id":"110ee6d56b499e00","type":"text","text":"## SPICE worker","x":-1120,"y":-1200,"width":260,"height":60},
+		{"id":"3a9af2970a1a2b07","type":"text","text":"## Dataset worker","x":-1120,"y":-1050,"width":260,"height":60},
+		{"id":"4f4f7175e8cedbb2","type":"text","text":"TODO:\n - Include source files into the vault","x":-1990,"y":-2060,"width":360,"height":120,"color":"#ffffff"},
+		{"id":"33680901b0bff52e","type":"text","text":"### Diviner dataset","x":-780,"y":-1360,"width":240,"height":60},
+		{"id":"302c62c910460874","type":"text","text":"# Data aggregator\n - Here we will link papers and stuff ...","x":-1147,"y":-895,"width":315,"height":145,"color":"6"},
+		{"id":"a55807a94a995896","type":"text","text":"# Data visualization & interpretation","x":-1147,"y":-720,"width":315,"height":130,"color":"6"},
+		{"id":"42b90668a009eb14","type":"text","text":"# Celery worker","x":-810,"y":-982,"width":300,"height":60,"color":"3"},
+		{"id":"d916033f414ce319","type":"text","text":"# MONGO","x":-810,"y":-902,"width":300,"height":60,"color":"4"},
+		{"id":"760c3c85f200fdda","type":"text","text":"# Dataset","x":-810,"y":-822,"width":300,"height":60,"color":"5"},
+		{"id":"de1d64b92a40e006","type":"text","text":"# Data processing","x":-810,"y":-742,"width":300,"height":60,"color":"6"}
+	],
+	"edges":[
+		{"id":"5e84327361b06658","fromNode":"15d940226cdb5c39","fromSide":"bottom","toNode":"110ee6d56b499e00","toSide":"top","color":"3","label":"Process SPICE files"},
+		{"id":"1ff15ebd3b705f88","fromNode":"110ee6d56b499e00","fromSide":"bottom","toNode":"3a9af2970a1a2b07","toSide":"top","color":"3","label":"Process dataset\n(might be one task)"},
+		{"id":"41cfe34f3c6319a1","fromNode":"dad4d324e9bbc97c","fromSide":"right","toNode":"e0c34f402008fae9","toSide":"left","color":"4"},
+		{"id":"a7d0b930ff667ec1","fromNode":"dad4d324e9bbc97c","fromSide":"right","toNode":"74363746a7e5455a","toSide":"left","color":"4"},
+		{"id":"ff62446ad575ce68","fromNode":"dad4d324e9bbc97c","fromSide":"right","toNode":"6bfc72e73a5b5dc8","toSide":"left","color":"4"},
+		{"id":"efad7dbb06ebce16","fromNode":"e0c34f402008fae9","fromSide":"right","toNode":"110ee6d56b499e00","toSide":"left","color":"4","label":"Provide Location of pits\n on worker startup"},
+		{"id":"ad65c8122a5a2fd8","fromNode":"e0c34f402008fae9","fromSide":"right","toNode":"3a9af2970a1a2b07","toSide":"left","color":"4"},
+		{"id":"3d2c8e71fa932bf2","fromNode":"3a9af2970a1a2b07","fromSide":"left","toNode":"74363746a7e5455a","toSide":"right","color":"3","label":"Send datapoints in batches"},
+		{"id":"4a5df7ae368bc444","fromNode":"74363746a7e5455a","fromSide":"right","toNode":"302c62c910460874","toSide":"left","color":"4","label":"DataHeap processing"},
+		{"id":"9894fc12f1b2aaa0","fromNode":"302c62c910460874","fromSide":"left","toNode":"6bfc72e73a5b5dc8","toSide":"right","color":"6","label":"Processed Data"},
+		{"id":"a911c73ef72e9db1","fromNode":"6bfc72e73a5b5dc8","fromSide":"right","toNode":"a55807a94a995896","toSide":"left","color":"4"}
+	]
+}

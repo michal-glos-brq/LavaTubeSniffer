@@ -53,6 +53,7 @@
 
 
 
+
 **To review**:
 
  - Distribution, formation mechanisms, and significance of lunar pits
@@ -62,3 +63,29 @@
  - Mapping potential (pretty serious) lava tube system:
 	 - https://agupubs.onlinelibrary.wiley.com/doi/10.1002/2016GL071588
 	 - https://agupubs.onlinelibrary.wiley.com/doi/10.1002/2017GL074998
+- EM simulation of lava tubes on radar?
+	- https://www.lpi.usra.edu/meetings/lpsc2013/pdf/1761.pdf
+- ESA Lunar cave exploration rover?
+	- https://www.esa.int/ESA_Multimedia/Images/2021/03/Lunar_cave_explorer
+- An Approach to Lava Tube Detection in Radar Sounder Data of the Moon
+	- https://ieeexplore.ieee.org/document/8519146?utm_source=chatgpt.com
+- High‐Resolution Morphology of Lunar Lava Tube Pits Using
+Photogrammetric Modeling of Multiple Stereo Images
+	 - https://agupubs.onlinelibrary.wiley.com/doi/epdf/10.1029/2024EA003532?utm_source=chatgpt.com
+- A Multi-Frequency Radar Sounder for Lava Tubes Detection on the Moon : Design,
+Performance Assessment and Simulations
+	 - https://rslab.disi.unitn.it/web/wp-content/uploads/2018/02/A-multi-frequency-radar-sounder-for-lava-tubes-detection-on-the-Moon-Design-performance-assessment-and-simulations-PSS_2017_229_2nd_rev.pdf?utm_source=chatgpt.com
+- Nadir Detection of Lunar Lava Tube by Kaguya Lunar Radar Sounder
+	- https://ieeexplore.ieee.org/document/9256303?utm_source=chatgpt.com
+- LRO satellite
+	- https://science.nasa.gov/wp-content/uploads/2024/01/lro-space-science-paper.pdf
+	- [[lro-space-science-paper.pdf]]
+- Moon Diver
+	- Good overall, good survey too
+		- https://ieeexplore.ieee.org/document/8741788
+	- https://www.hou.usra.edu/meetings/4thcaves2023/pdf/1083.pdf
+	- https://www.hou.usra.edu/meetings/leag2016/pdf/5068.pdf
+- Lunar Pit Human occupation:
+	- https://www.sciencedirect.com/science/article/pii/S0094576522006853
+	- https://www.sciencedirect.com/science/article/pii/S0019103518307826
+	- https://www.sciencedirect.com/science/article/pii/S2950616624000019
