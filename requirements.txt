@@ -1,0 +1,15 @@
+# Decided to use big, but universal requirements.txt file
+numpy<2.0.0
+pandas
+lxml
+beautifulsoup4
+tqdm
+pds4-tools
+pydantic
+httpx
+celery
+flower
+pymongo
+
+# Also sudo apt install celery
+# TODO: Probably set it up somehow portably ...

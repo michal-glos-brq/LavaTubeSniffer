@@ -1,41 +1,37 @@
 """
 This code scrapes the Lunar Pits database and saves it into a MongoDB database.
 """
+import os
+import requests
+from time import sleep
 
 from bs4 import BeautifulSoup
-
-import requests
 import pandas as pd
 from tqdm import tqdm
-import os
-from time import sleep
 from pymongo import MongoClient
 
 from src.config.mongo_config import (
     IMG_BASE_FOLDER,
     MONGO_URI,
-    DB_NAME,
+    PIT_ATLAS_DB_NAME,
     PIT_COLLECTION_NAME,
     PIT_DETAIL_COLLECTION_NAME,
     IMAGE_COLLECTION_NAME,
-    MONGO_HEADERS,
-    LIST_URL,
-    BASE_URL,
-    HEADERS,
-    MAX_RETRIES,
-    EXPECTED_HEADERS,
+    PIT_TABLE_COLUMNS,
+    PIT_ATLAS_LIST_URL,
+    PIT_ATLAS_BASE_URL,
+    BROWSER_HEADERS,
+    REQUEST_MAX_RETRIES,
+    EXPECTED_PIT_TABLE_COLUMNS,
+    INITIAL_DOWNLOAD_RESET_TIME_SECONDS,
+    BROWSER_HEADERS,
 )
 
 
-# Ensure image directory exists
-os.makedirs(IMG_BASE_FOLDER, exist_ok=True)
-
-
-# Utility Functions
-def fetch_with_retries(url, headers, max_retries=MAX_RETRIES, pbar=None):
+def fetch_with_retries(url, headers, REQUEST_MAX_RETRIES=REQUEST_MAX_RETRIES, pbar=None):
     """Fetch a URL with retry logic."""
-    sleep_time = 15
-    for _ in range(max_retries):
+    sleep_time = INITIAL_DOWNLOAD_RESET_TIME_SECONDS
+    for _ in range(REQUEST_MAX_RETRIES):
         try:
             response = requests.get(url, headers=headers)
             if response.status_code == 200:
@@ -51,7 +47,9 @@ def fetch_with_retries(url, headers, max_retries=MAX_RETRIES, pbar=None):
 
 
 def parse_table_headers(table):
-    """Extract headers from a table."""
+    """
+    Extract headers from a table.
+    """
     return [header.text.strip() for header in table.find("thead").find_all("th")]
 
 
@@ -77,7 +75,7 @@ def parse_table_rows(table):
 
 def download_image(image_url, pbar=None):
     """Download an image and save it locally."""
-    img_response = fetch_with_retries(image_url, HEADERS, pbar=pbar)
+    img_response = fetch_with_retries(image_url, BROWSER_HEADERS, pbar=pbar)
     if img_response:
         image_name = os.path.basename(image_url)
         image_path = os.path.join(IMG_BASE_FOLDER, image_name)
@@ -111,7 +109,7 @@ def parse_details_and_images(divs, row_name, pbar=None):
                     value = dato.find("td").text.strip()
                     image_detail[key] = value
                 elif img := dato.find("img"):
-                    image_url = f"{BASE_URL}{img['src']}"
+                    image_url = f"{PIT_ATLAS_BASE_URL}{img['src']}"
                     image_path = download_image(image_url, pbar=pbar)
                     if image_path:
                         image_detail["image_path"] = image_path
@@ -120,7 +118,7 @@ def parse_details_and_images(divs, row_name, pbar=None):
 
 
 def replace_collection(collection_name, df, db):
-    """Replaces a MongoDB collection with a DataFrame."""
+    """Rewrites a collection by dataframe data"""
     collection = db[collection_name]
     # Drop the existing collection
     collection.drop()
@@ -131,12 +129,14 @@ def replace_collection(collection_name, df, db):
 
 
 # Main Script
-def main():
+def scrape_lunar_pit_atlas():
+    # Ensure image folder exists
+    os.makedirs(IMG_BASE_FOLDER, exist_ok=True)
     # Connect to Mongo DB
     client = MongoClient(MONGO_URI)
-    db = client[DB_NAME]
+    db = client[PIT_ATLAS_DB_NAME]
     # Fetch main list page
-    response = requests.get(LIST_URL, headers=HEADERS)
+    response = requests.get(PIT_ATLAS_LIST_URL, headers=BROWSER_HEADERS)
     if response.status_code != 200:
         print(f"Failed to fetch the list page. Status code: {response.status_code}")
         exit()
@@ -145,11 +145,11 @@ def main():
     soup = BeautifulSoup(response.content, "html.parser")
     table = soup.find("table", {"id": "pitsTable"})
     headers = parse_table_headers(table)
-    if headers != EXPECTED_HEADERS:
+    if headers != EXPECTED_PIT_TABLE_COLUMNS:
         raise ValueError("Table headers have changed. Please update the script.")
 
     rows_data = parse_table_rows(table)
-    general_df = pd.DataFrame(rows_data, columns=MONGO_HEADERS)
+    general_df = pd.DataFrame(rows_data, columns=PIT_TABLE_COLUMNS)
 
     detail_data = []
     image_data = []
@@ -158,8 +158,8 @@ def main():
     pbar = tqdm(total=general_df.shape[0], desc="Fetching Details", ncols=100)
     for _, row in general_df.iterrows():
         pbar.set_description("Fetching Details ...")
-        detail_url = f'{BASE_URL}{row["link_suffix"]}'
-        detail_response = fetch_with_retries(detail_url, HEADERS, pbar=pbar)
+        detail_url = f'{PIT_ATLAS_BASE_URL}{row["link_suffix"]}'
+        detail_response = fetch_with_retries(detail_url, BROWSER_HEADERS, pbar=pbar)
         if not detail_response:
             print(f"Failed to fetch details for {row['name']}")
             continue
@@ -192,4 +192,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    scrape_lunar_pit_atlas()

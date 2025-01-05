@@ -6,26 +6,16 @@ Requires to run mongo.scrape-lunar-pits-database.py to scrape the dataset first
 
 from pymongo import MongoClient, GEOSPHERE
 from tqdm import tqdm
+
 from src.config.mongo_config import (
     MONGO_URI,
-    DB_NAME,
-    DB_NAME_PARSED,
+    PIT_ATLAS_DB_NAME,
+    PIT_ATLAS_PARSED_DB_NAME,
     IMAGE_COLLECTION_NAME,
     PIT_DETAIL_COLLECTION_NAME,
     PIT_COLLECTION_NAME,
 )
 from src.mongo.models.lunar_pit_atlas import ImageCollection, PitDetailsCollection, PitsCollection
-
-
-def validate_and_transform(collection, model_class, doc):
-    """
-    Validate and transform a MongoDB document using a Pydantic model.
-    """
-    try:
-        return model_class(**doc).dict(by_alias=True)
-    except Exception as e:
-        print(f"Validation failed for document {doc['_id']}: {e}")
-        return None
 
 
 def perform_largescale_conversion_with_pydantic(collection_in, collection_out, model_class):
@@ -52,11 +42,10 @@ def perform_largescale_conversion_with_pydantic(collection_in, collection_out, m
         pbar.update(1)
     pbar.close()
 
-
-def main():
+def parse_lunar_pits_db():
     client = MongoClient(MONGO_URI)
-    db_in = client.get_database(DB_NAME)
-    db_out = client.get_database(DB_NAME_PARSED)
+    db_in = client.get_database(PIT_ATLAS_DB_NAME)
+    db_out = client.get_database(PIT_ATLAS_PARSED_DB_NAME)
 
     # Process image collection
     collection_in = db_in[IMAGE_COLLECTION_NAME]
@@ -72,6 +61,8 @@ def main():
         db_out.drop_collection(PIT_DETAIL_COLLECTION_NAME)
     collection_out = db_out.create_collection(PIT_DETAIL_COLLECTION_NAME)
     collection_out.create_index([("location", GEOSPHERE)])
+    # Create index on name field
+    collection_out.create_index([("name", 1)])
 
     perform_largescale_conversion_with_pydantic(collection_in, collection_out, PitDetailsCollection)
 
@@ -81,10 +72,11 @@ def main():
         db_out.drop_collection(PIT_COLLECTION_NAME)
     collection_out = db_out.create_collection(PIT_COLLECTION_NAME)
     collection_out.create_index([("location", GEOSPHERE)])
+    # Create index on name field
+    collection_out.create_index([("name", 1)])
 
     perform_largescale_conversion_with_pydantic(collection_in, collection_out, PitsCollection)
 
 
-
 if __name__ == "__main__":
-    main()
+    parse_lunar_pits_db()
