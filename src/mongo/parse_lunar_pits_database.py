@@ -4,6 +4,8 @@ This script will parse the existing Lunar Pit MongoDB database and create a new 
 Requires to run mongo.scrape-lunar-pits-database.py to scrape the dataset first
 """
 
+import sys
+
 from pymongo import MongoClient, GEOSPHERE
 from tqdm import tqdm
 
@@ -22,7 +24,13 @@ def perform_largescale_conversion_with_pydantic(collection_in, collection_out, m
     """
     Perform large-scale transformation using Pydantic models for validation and conversion.
     """
-    pbar = tqdm(total=collection_in.count_documents({}), desc=f"Processing {collection_in.name}", ncols=100)
+    pbar = tqdm(
+        total=collection_in.count_documents({}),
+        desc=f"Processing {collection_in.name}",
+        dynamic_ncols=True,
+        leave=True,
+        file=sys.stderr,
+    )
     for doc in collection_in.find({}):
         try:
             # Validate and transform using Pydantic
@@ -41,6 +49,7 @@ def perform_largescale_conversion_with_pydantic(collection_in, collection_out, m
         )
         pbar.update(1)
     pbar.close()
+
 
 def parse_lunar_pits_db():
     client = MongoClient(MONGO_URI)

@@ -1,7 +1,9 @@
 """
 This code scrapes the Lunar Pits database and saves it into a MongoDB database.
 """
+
 import os
+import sys
 import requests
 from time import sleep
 
@@ -155,7 +157,7 @@ def scrape_lunar_pit_atlas():
     image_data = []
 
     # Fetch detailed pages and parse
-    pbar = tqdm(total=general_df.shape[0], desc="Fetching Details", ncols=100)
+    pbar = tqdm(total=general_df.shape[0], desc="Fetching Details", dynamic_ncols=True, leave=True, file=sys.stderr)
     for _, row in general_df.iterrows():
         pbar.set_description("Fetching Details ...")
         detail_url = f'{PIT_ATLAS_BASE_URL}{row["link_suffix"]}'

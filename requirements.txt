@@ -2,14 +2,17 @@
 numpy<2.0.0
 pandas
 lxml
-beautifulsoup4
 tqdm
+beautifulsoup4
 pds4-tools
 pydantic
+
 httpx
 celery
 flower
 pymongo
-
+redis
+requests
+gevent
 # Also sudo apt install celery
 # TODO: Probably set it up somehow portably ...

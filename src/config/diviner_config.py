@@ -7,7 +7,7 @@ DIVINER_BASE_URL = "https://pds-geosciences.wustl.edu"
 BASE_SUFFIX = "/lro/lro-l-dlre-4-rdr-v1/"
 
 # This are the BASE URLs we consider as roots for the webcrawler
-BASE_URLS = []
+BASE_URLS = ["https://pds-geosciences.wustl.edu/lro/lro-l-dlre-4-rdr-v1/lrodlr_1002/data/2023/202307/20230701/"]
 
 # File suffixes we care to download
 FILE_SUFFIXES = {".zip", ".xml"}

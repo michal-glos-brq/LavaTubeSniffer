@@ -14,6 +14,10 @@ class BaseInitiator(ABC):
     @abstractmethod
     def BASE_URLS(self): ...
 
+    @property
+    @abstractmethod
+    def DATASET_NAME(self): ...
+
     @abstractmethod
     def parse_file_page(self, response: requests.Response) -> List[str]:
         ...
@@ -41,27 +45,23 @@ class BaseInitiator(ABC):
 
     def create_folder_task(self, url: str):
         self.db_session[self.task_collection_name].insert_one(
-            {"url": url, "task_finished": False, "is_folder": True, "assigned": False}
+            {"_id": url, "task_finished": False, "is_folder": True, "assigned": False}
         )
-        self.db_session.commit()
 
     def finish_folder_task(self, url: str):
-        self.db_session[self.task_collection_name].update_one({"url": url}, {"$set": {"task_finished": True}})
-        self.db_session.commit()
+        self.db_session[self.task_collection_name].update_one({"_id": url}, {"$set": {"task_finished": True}})
 
     def create_file_tasks(self, urls: List[str]):
         """
         Create tasks for the files in bulk
         """
         self.db_session[self.task_collection_name].insert_many(
-            [{"url": url, "task_finished": False, "is_folder": False, "assigned": False} for url in urls]
+            [{"_id": url, "task_finished": False, "is_folder": False, "assigned": False} for url in urls]
         )
-        self.db_session.commit()
         assigned_urls = self.create_celery_tasks(urls)
         self.db_session[self.task_collection_name].update_many(
-            {"url": {"$in": assigned_urls}}, {"$set": {"assigned": True}}
+            {"_id": {"$in": assigned_urls}}, {"$set": {"assigned": True}}
         )
-        self.db_session.commit()
 
     def process_url(self, url: str) -> Tuple[List[str], List[str]]:
         response = requests.get(url)
@@ -75,7 +75,8 @@ class BaseInitiator(ABC):
             self.finish_folder_task(url)
 
             self.local_task_stack.extend(folders_url)
-            self.create_file_tasks(files_url)
+            if files_url:
+                self.create_file_tasks(files_url)
 
     def sweep(self):
         self.local_task_stack = self.BASE_URLS
@@ -94,6 +95,6 @@ class BaseInitiator(ABC):
         assigned_unifinished_tasks = self.db_session[self.task_collection_name].find(
             {"is_folder": False, "task_finished": False, "assigned": True}
         )
-        self.create_file_tasks([task["url"] for task in assigned_unifinished_tasks])
-        self.local_task_stack = [folder["url"] for folder in unfinished_folders]
+        self.create_file_tasks([task["_id"] for task in assigned_unifinished_tasks])
+        self.local_task_stack = [folder["_id"] for folder in unfinished_folders]
         self.execute_tasks()
