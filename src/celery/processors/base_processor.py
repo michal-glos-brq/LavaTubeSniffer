@@ -75,7 +75,7 @@ class BaseProcessor(ABC):
     def parse_pds4_metadata(xml_data):
         """Extract field metadata from the PDS4 XML file."""
         root = etree.fromstring(xml_data)
-        ns = root.nsmap
+        ns = {"pds": "http://pds.nasa.gov/pds4/pds/v1"}
         # Extract field metadata from the XML
         fields = []
         for field in root.xpath(".//pds:Field_Character", namespaces=ns):

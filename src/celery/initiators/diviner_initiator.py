@@ -45,12 +45,15 @@ class DivinerInitiator(BaseInitiator):
                 continue
 
             filename = href.split("/")[-1]
-            if re.search(self.reject_regex, filename):
-                continue
-            elif re.search(self.suffix_regex, filename):
-                files.append(href)
-            elif re.search(self.filename_regex, filename):
-                folders.append(href)
+            if filename:
+                # Means it is a file, folder would be empty string
+                if re.search(self.suffix_regex, filename):
+                    files.append(href)
+            else:
+                filename = href.split("/")[-2]
+                if re.search(self.filename_regex, filename):
+                    folders.append(href)
+
         return folders, files
 
     def create_celery_tasks(self, urls: List[str]) -> List[str]:
@@ -70,7 +73,6 @@ class DivinerInitiator(BaseInitiator):
                 diviner_task.apply_async(args=(data["xml"], data["zip"], self.tolerance))
                 logging.info(f"Initiated task for {data['xml']} and {data['zip']}")
                 assigned_urls.extend([data["xml"], data["zip"]])
-                break
             else:
                 print("Something went wrong, you should probably check the data")
 

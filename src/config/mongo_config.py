@@ -14,9 +14,6 @@ PIT_DETAIL_COLLECTION_NAME = "pit_details"
 
 DIVINER_COLLECTION_NAME = "diviner"
 
-
-DATAHEAP_DB_NAME = "lro_pits_dataheap"
-
 INITIAL_DOWNLOAD_RESET_TIME_SECONDS = 15
 
 ### Configuration for local-ran scripts (Pit Atlas scraping and parsing)
@@ -58,7 +55,7 @@ PIT_TABLE_COLUMNS = [
     "link_suffix",
 ]
 # Maximal wait time will be sleep_time * 2 ** MAX_RETRIES
-REQUEST_MAX_RETRIES = 5     # sleep_time * 32, which is 8 minutes
+REQUEST_MAX_RETRIES = 5  # sleep_time * 32, which is 8 minutes
 
 BROWSER_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.5790.170 Safari/537.36",
