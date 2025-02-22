@@ -12,43 +12,5 @@ services:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
     restart: always
-
-  redis:
-    image: redis:7.0
-    container_name: redis_lunar_sniffer
-    ports:
-      - "6379:6379"
-    command: ["redis-server", "--appendonly", "yes"]
-    volumes:
-      - /media/mglos/HDD_8TB/REDIS:/data
-    restart: always
-
-  influxdb:
-    image: influxdb:2.7
-    restart: always
-    ports:
-      - "8086:8086"
-    # InfluxDB 2.x stores data in /var/lib/influxdb2
-    volumes:
-      - /media/mglos/HDD_8TB/INFLUX:/var/lib/influxdb2
-    environment:
-      - DOCKER_INFLUXDB_INIT_MODE=setup
-      - DOCKER_INFLUXDB_INIT_USERNAME=admin
-      - DOCKER_INFLUXDB_INIT_PASSWORD=yourpassword
-      - DOCKER_INFLUXDB_INIT_ORG=sat_tracking
-      - DOCKER_INFLUXDB_INIT_BUCKET=telemetry
-      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=supersecrettoken
-
-  grafana:
-    image: grafana/grafana:latest
-    restart: always
-    ports:
-      - "3000:3000"
-    depends_on:
-      - influxdb
-    volumes:
-      - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-
 volumes:
   grafana_data:

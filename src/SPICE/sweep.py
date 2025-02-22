@@ -2,7 +2,6 @@
 This script processes SPICE data to identify time intervals when LRO DIVINER
 is within areas of interest.
 """
-
 import logging
 import sys
 from typing import Optional
@@ -26,7 +25,16 @@ logger = logging.getLogger(__name__)
 
 class Sweeper:
     """
-    Iterates through SPICE data to update instrument distances to areas of interest.
+    Iterates through SPICE data to update instrument distances to areas of interest,
+    adjusts simulation timesteps, and records detections (points of interest) into MongoDB.
+
+    For each simulation step:
+      1. It projects the instrument’s boresight to get a first set of feasible target points.
+      2. It then computes sub-instrument boresight projections and uses these to compute distances
+         from each sub-instrument to the feasible points.
+      3. If any sub-instrument yields a minimum distance below a defined (finer) threshold,
+         the detection is recorded (with instrument name, simulation ET, best distance, and sub-instrument ID).
+         
     """
 
     def __init__(self):
@@ -48,9 +56,9 @@ class Sweeper:
         self.sweep_iterator.initiate_sweep(self.current_simulation_timestamp)
 
         # Tracking lists
-        self._found_timestamps = []
+        self._found_timestamps, self._found_timestamps_cnt = [], 0
         self._boresight_projections = []
-        self._failed_timestamps = []
+        self._failed_timestamps, self._failed_timestamps_cnt = [], 0
         self.adjusted_timesteps = []
         self.min_distances = []
 
@@ -128,34 +136,49 @@ class Sweeper:
         self.min_distances.append(min_distance)
 
     def run_simulation(self, max_steps: Optional[int] = None):
+        # Prepare misc
         total_seconds = (self.max_time - self.min_time).to_value("sec")
         pbar_format_string = ("" if max_steps is None else f"/{max_steps}")
 
+        # Here we store our points of interest to dump them into DB, eventually
+        points_of_interest_batch = []
+
+        # Run the main simulation loop
         with tqdm(total=total_seconds, ncols=TQDM_NCOLS, desc="Running simulation") as pbar:
+
             while self.current_simulation_timestamp <= self.max_time:
+            
+                # TQDM instrumentation
                 pbar.update(self.computation_timedelta.to_value("sec"))
-                if self.current_simulation_step % 100 == 0:
+                if self.current_simulation_step % 256 == 0:
                     step_info = f"Simulation step:{self.current_simulation_step}"
                     failed_found_info = f"; failed: {len(self._failed_timestamps)}; found: {len(self._found_timestamps)}"
                     pbar.set_description(step_info + pbar_format_string + failed_found_info)
+
+                # Check if we reached the maximum number of steps
                 if max_steps is not None and self.current_simulation_step >= max_steps:
                     break
-                try:
-                    self._step_time()
-                    boresights = []
 
+                try:
+                    # Perform the simulation step
+                    self._step_time()
+
+                    # Compute projection of boresight for each instrument
                     for instrument in self.instruments:
-                        feasible_points, feasible_ids, boresight = self.find_nearby_pits(instrument)
+                        # Projects to the lunar surface and looks for closest points (may be empty)
+                        feasible_points, _, boresight = self.find_nearby_pits(instrument)
                         new_distances = self.compute_distances_from_projected_vector(feasible_points, boresight)
-                        boresights.append(boresight)
+                        
+                        
                         if any(new_distances < instrument.rough_treshold):
                             self._found_timestamps.append((boresight, self.current_simulation_timestamp, self.current_simulation_step))
+                            self._found_timestamps_cnt += 1
                             #logging.info("Found!")
                     self.adjust_timestep(boresights)
-                    self._boresight_projections.append(boresights)
                 except Exception as e:
                     # logger.exception(
                     #     f"Error at step {self.current_simulation_step}: {e}"
                     # )
                     self._failed_timestamps.append((self.current_simulation_timestamp, self.current_simulation_step))
+                    self._failed_timestamps_cnt += 1
         return

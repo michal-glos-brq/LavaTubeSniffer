@@ -65,3 +65,9 @@ BROWSER_HEADERS = {
     "Connection": "keep-alive",
     "Upgrade-Insecure-Requests": "1",
 }
+
+
+
+### Simulation data
+SIMULATION_DB_NAME = "astro-simulation"
+SIMULATION_POINTS_COLLECTION = "simulation_points"

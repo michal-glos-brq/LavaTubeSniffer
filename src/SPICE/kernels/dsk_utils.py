@@ -11,7 +11,7 @@ import astropy.units as u
 from astropy.coordinates import SphericalRepresentation
 
 sys.path.insert(0, "/".join(__file__.split("/")[:-3]))
-from src.SPICE import dynamic_kernel_loader
+from src.SPICE.kernels import dynamic_kernel_loader
 from src.SPICE.config import (
     LUNAR_MODEL,
     LUNAR_RADIUS,
