@@ -5,7 +5,7 @@ import requests
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
-from src.mongo.interface import Sessions
+from src.db.mongo.interface import Sessions
 
 
 class BaseInitiator(ABC):

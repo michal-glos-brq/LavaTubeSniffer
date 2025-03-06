@@ -1,5 +1,6 @@
 import sys
-sys.path.insert(0, "/".join(__file__.split("/")[:-5]))
-from src.SPICE.instruments.diviner import DIVINERInstrument
+sys.path.insert(0, "/".join(__file__.split("/")[:-4]))
 
-__all__ = ["DIVINERInstrument"]
+from src.SPICE.instruments.lro import DIVINERInstrument
+
+__all__ = ["DIVINERInstrument", "LROSweepIterator"]

@@ -71,3 +71,7 @@ BROWSER_HEADERS = {
 ### Simulation data
 SIMULATION_DB_NAME = "astro-simulation"
 SIMULATION_POINTS_COLLECTION = "simulation_points"
+
+RDR_DIVINER_DB = "rdr_diviner"
+RDR_DIVINER_COLLECTION = "rdr_diviner_filtered" # Here, surely the querried area have to be added as a suffix
+

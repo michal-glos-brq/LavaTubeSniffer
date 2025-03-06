@@ -9,7 +9,7 @@ import numpy as np
 BASE_URL = (
     "https://naif.jpl.nasa.gov/pub/naif/pds/data/lro-l-spice-6-v1.0/lrosp_1000/data/"
 )
-DESTINATION = "/media/mglos/HDD_8TB1/SPICE"
+DESTINATION = "/media/mglos/HDD_8TB2/SPICE"
 
 ###############################################
 #             LRO RESOURCES                   #
@@ -20,16 +20,18 @@ LRO_RESOURCES = {
     "ck": re.compile(r"(lrodv|lrosc).*.(bc|lbl)"),
     # SPK (SP Kernel): Spacecraft trajectory/ephemeris data
     "spk": re.compile(r"lrorg.*.(bsp|lbl)"),
-    # SCLK (Spacecraft Clock Kernel): Time correlation data
-    "sclk": re.compile(r"lro_clkcor.*.(tsc|lbl)"),
+    # SCLK (Spacecraft Clock Kernel): Time correlation data, newes is OK, contains all historical data
+    "sclk": re.compile(r"lro_clkcor_2024262_v00.*.(tsc|lbl)"),
     # IK (Instrument Kernel): Instrument parameters/characteristics
-    "ik": re.compile(r"lro.*.(ti|lbl)"),
+    "ik": re.compile(r"lro_(crater|dlre|lamp|lend|lola).*.(ti|lbl)"),
     # LSK (Leap Seconds Kernel): Time system conversions
     "lsk": re.compile(r"naif.*.(tls|lbl)"),
     # FK (Frame Kernel): Reference frame definitions
     "fk": re.compile(r"(lro|moon).*.(tf|lbl)"),
     # PCK (Planetary Constants Kernel): Celestial body physical properties
     "pck": re.compile(r"(pck|moon).*.(bpc|lbl)"),
+    # EK - event kernels of LRO
+    "ek": re.compile(r"lroevnt.*.(bes|lbl)"),
 }
 
 ###############################################
@@ -42,16 +44,16 @@ LONE_KERNELS = [
         "path": os.path.join(DESTINATION, "moon_pa_de440_200625.bpc"),
     },
     {
-        "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/pck/pck00011.tpc",
-        "path": os.path.join(DESTINATION, "pck00011.tpc"),
-    },
-    {
         "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de441_part-1.bsp",
         "path": os.path.join(DESTINATION, "de441_part-1.bsp"),
     },
     {
         "url": "https://naif.jpl.nasa.gov/pub/naif/generic_kernels/spk/planets/de441_part-2.bsp",
         "path": os.path.join(DESTINATION, "de441_part-2.bsp"),
+    },
+    {
+        "url": "https://naif.jpl.nasa.gov/pub/naif/LRO/kernels/ik/lro_lroc_v19.ti",
+        "path": os.path.join(DESTINATION, "ik/lro_lroc_v19.ti"),
     },
 ]
 
@@ -61,9 +63,9 @@ LONE_KERNELS = [
 
 LUNAR_MODEL = {
     "url": "https://planetarymaps.usgs.gov/mosaic/Lunar_LRO_LOLA_Global_LDEM_118m_Mar2014.tif",
-    "tif_path": "/media/mglos/HDD_8TB1/LOLA_DSK/Lunar_LRO_LOLA_Global_LDEM_118m_Mar2014.tif",
-    "dsk_path": "/media/mglos/HDD_8TB1/LOLA_DSK/dsk/output7_5_percent.new_gen.dsk",
-    "xyz_path": "/media/mglos/HDD_8TB1/LOLA_DSK/xyz/output7_5_percent.xyz",
+    "tif_path": "/media/mglos/HDD_8TB2/LOLA_DSK/Lunar_LRO_LOLA_Global_LDEM_118m_Mar2014.tif",
+    "dsk_path": "/media/mglos/HDD_8TB2/LOLA_DSK/dsk/output7_5_percent.new_gen.dsk",
+    "xyz_path": "/media/mglos/HDD_8TB2/LOLA_DSK/xyz/output7_5_percent.xyz",
     "commands": None,
 }
 LUNAR_MODEL["commands"] = [
@@ -108,13 +110,39 @@ QUERY_RADIUS_MULTIPLIER = 1.3
 DIVINER_INSTRUMENT_IDS = [
     -85211, -85212, -85213, -85214, -85215, -85216, -85221, -85222, -85223
 ]
+LOLA_INSTRUMENT_IDS = [-85511, -85512, -85513, -85514, -85515, -85521, -85522, -85523, -85523, -85525]
+MINIRF_INSTRUMENT_IDS = [-85700]
+WAC_INSTRUMENT_IDS = [-85621, -85626]
+NAC_INSTRUMENT_IDS = [-85600, -85610]
+
+
+LRO_DIVINER_FRAME_STR_ID = "LRO_DLRE"
+LRO_LOLA_FRAME_STR_ID = "LRO_LOLA"
+LRO_MINIRF_FRAME_STR_ID = "LRO_MINIRF"
+
+
+
+DIVINER_INSTRUMENT_ID_TO_RDR_INDEX = {
+    -85211: 1,
+    -85212: 2,
+    -85213: 3,
+    -85214: 4,
+    -85215: 5,
+    -85216: 6,
+    -85221: 7,
+    -85222: 8,
+    -85223: 9,
+}
+
+
+
+
 MOON_STR_ID = "MOON"
 MOON_REF_FRAME_STR_ID = "MOON_ME"
-
-# CK data and related frames
 LRO_STR_ID = "LUNAR RECONNAISSANCE ORBITER"
-#LRO_DIVINER_FRAME_STR_ID = "LRO_DLRE_FP_A"
-LRO_DIVINER_FRAME_STR_ID = "LRO_DLRE"
+
+
+
 
 # Additional simulation configuration
 ABBERRATION_CORRECTION = "CN+S"
